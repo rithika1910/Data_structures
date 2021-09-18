@@ -1,0 +1,557 @@
+#include <iostream>
+#include<string>
+#include <sstream>
+using namespace std;
+
+template<class T>
+class DLList {
+public:
+	class Node {
+	public:
+		T element;
+		Node *next;
+		Node *prev;
+		Node(T x) {
+		    //@start-editable@
+
+        element=x;
+        next=NULL;
+        prev=NULL;		
+			
+			//@end-editable@
+		}
+	};
+	Node *head;
+	Node *tail;
+	int n;
+public:
+	DLList() {
+		n = 0;
+		head = tail = NULL;
+	}
+
+	bool isEmpty(){
+		//@start-editable@
+
+	   return (n==0);	
+		
+		
+		//@end-editable@
+	}
+
+	int size() {
+	    //@start-editable@
+
+	    return n;
+	    
+	    
+	    //@end-editable@
+	}
+
+	bool insertLast(T x) {
+	    //@start-editable@
+
+		
+		Node *temp=new Node(x);
+	    if(n==0){
+	        this->tail=temp;
+	        this->head=temp;
+	    }else{
+	        this->tail->next=temp;
+	        temp->prev=this->tail;
+	        this->tail=temp;
+	    }
+	    n++;
+		
+		
+		
+		//@end-editable@
+		return true;
+	}
+
+	T insertFirst(T x) {
+	    //@start-editable@
+
+		Node *temp=new Node(x);
+	    if(n==0){
+	        this->head=temp;
+	        this->tail=temp;
+	    }else{
+	        temp->next=this->head;
+	        this->head->prev=temp;
+	        this->head=temp;
+	    }
+	    n++;
+	    
+		
+		//@end-editable@
+		return x;
+	}
+
+	T deleteLast() {
+	    //@start-editable@
+
+		T x=this->tail->element;
+	    if(n==0){
+	        cout<<"List Empty"<<endl;
+	        return true;
+	    }
+	    if(n==1){
+	        this->head=NULL;
+	        this->tail=NULL;
+	        n--;
+	    }else{
+	        Node *curnode=this->tail->prev;
+	        curnode->next->prev=NULL;
+	        curnode->next=NULL;
+	        this->tail=curnode;
+	        n--;
+	    }
+		
+		
+		
+		//@end-editable@
+		return x;
+		
+		
+	}
+
+	T deleteFirst() {
+	    //@start-editable@
+
+		T x=this->head->element;
+	    if(n==0){
+	        cout<<"List Empty"<<endl;
+	        return true;
+	    }
+	    if(n==1){
+	        this->tail=NULL;
+	        this->head=NULL;
+	        n--;
+	    }else{
+	        Node *curnode=this->head->next;
+	        curnode->prev->next=NULL;
+	        curnode->prev=NULL;
+	        this->head=curnode;
+	        n--;
+	    }
+		
+		
+		
+		
+		//@end-editable@
+		return x;
+	}
+
+	//insert a node with value u after the node containing value v
+    T insertAfter(T u,T v){
+    	//@start-editable@
+
+		Node *temp=new Node(u);
+    	Node *curnode=this->head;
+    	Node *tnode=this->tail;
+    	int f=0;
+    	if(n==0){
+    	    return true;
+    	}
+    	if(n==1 && tnode->element==v){
+    	    this->insertLast(u);
+    	    return true;
+    	}
+    	while(curnode->next!=NULL){
+    	    if(curnode->element==v){
+    	        temp->next=curnode->next;
+    	        temp->prev=curnode;
+    	        curnode->next->prev=temp;
+    	        curnode->next=temp;
+    	        n++;
+    	        f=1;
+    	        break;
+    	    }
+    	    curnode=curnode->next;
+    	}
+    	if(f!=1){
+    	    if(tnode->element==v){
+    	        this->insertLast(u);
+    	        f=1;
+    	    }
+    	}
+    	if(f==0){
+    	    cout<<"Node to insert after not found"<<endl;
+    	}
+		
+		
+		
+		
+		//@end-editable@
+    	return true;
+    }
+    
+
+    //insert a node with value u before the node containing value v
+
+    T insertBefore(T u,T v){
+    	//@start-editable@
+
+		
+		Node *temp=new Node(u);
+    	Node *tnode=this->head;
+    	Node *curnode=this->tail;
+    	int f=0;
+    	if(n==0){
+    	    return true;
+    	}
+    	if(n==1 && tnode->element==v){
+    	    this->insertFirst(u);
+    	    return true;
+    	}
+    	if(n==1 && tnode->element!=v){
+    	    return true;
+    	}
+    	if(tnode->element==v){
+    	    this->insertFirst(u);
+    	    return true;
+    	}
+    	while(tnode!=NULL){
+    	    if(tnode->element==v){
+    	        temp->prev=tnode->prev;
+    	        temp->next=tnode;
+    	        tnode->prev=temp;
+    	        temp->prev->next=temp;
+    	        n++;
+    	        f=1;
+    	        break;
+    	    }
+    	    tnode=tnode->next;
+    	}
+    	if(f==0){
+    	    cout<<"Node to insert before not found"<<endl;
+    	}
+		
+		
+		
+		
+		//@end-editable@
+    	return true;
+    }
+
+    //delete the node after the node containting value u
+    T deleteAfter(T u){
+    	//@start-editable@
+
+		int f=0;
+		if(n==0 || (n==1 && this->head->element==u)){
+		    return true;
+		}
+		if(n==1 && this->head->element!=u){
+		    return true;
+		}
+		if(n==2 && this->head->element==u){
+		    this->deleteLast();
+		    return true;
+		}
+		if(n==2 && this->head->next->element==u){
+		    return true;
+		}
+		if(n==2 && this->head->element!=u && this->head->next->element!=u){
+		    f=0;
+		}else{
+		    Node *curnode=this->head;
+		    while(curnode->next->next!=NULL){
+		        if(curnode->element==u){
+		            Node *temp=curnode->next;
+		            curnode->next=temp->next;
+		            temp->next->prev=curnode;
+		            temp->prev=NULL;
+		            temp->next=NULL;
+		            n--;
+		            f=1;
+		            break;
+		        }
+		        curnode=curnode->next;
+		    }
+		    if(f!=1){
+		        Node *tnode=this->tail->prev;
+		        if(tnode->element==u){
+		            this->deleteLast();
+		            return true;
+		            }
+		    }
+		    if(this->tail->element==u){
+		        return true;
+		    }
+		}
+		    if(f==0){
+		        cout<<"Node to delete after not found"<<endl;
+		    }
+		    return true;
+		
+		
+		
+		
+		//@end-editable@
+
+    }
+    
+	//delete the node before the node containting value u
+    T deleteBefore(T u){
+    	//@start-editable@
+
+		
+		int f=0;
+		if(this->head->element==u){
+		    return true;
+		}
+		if(n==0 || (n==1 && this->head->element==u)){
+		    return true;
+		}
+		if(n==1 && this->head->element!=u){
+		    return true;
+		}
+		if(n==2 && this->head->element==u){
+		    return true;
+		}
+		if(n==2 && this->head->next->element==u){
+		    this->deleteFirst();
+		    return true;
+		}
+		if(n==2 && this->head->element!=u && this->head->next->element!=u){
+		    f=0;
+		}else{
+		    Node *tnode=this->head->next;
+		    if(tnode->element==u){
+		        this->deleteFirst();
+		        return true;
+		    }
+		    tnode=tnode->next;
+		    while(tnode!=NULL){
+		        if(tnode->element==u){
+		            Node *temp=tnode->prev;
+		            temp->prev->next=tnode;
+		            tnode->prev=temp->prev;
+		            temp->prev=NULL;
+		            temp->next=NULL;
+		            n--;
+		            f=1;
+		            break;
+		        }
+		        tnode=tnode->next;
+		    }
+		}
+		    if(f==0){
+		        cout<<"Node to delete after not found"<<endl;
+		    }
+		    return true;
+		
+		
+		
+		
+		//@end-editable@
+
+    }
+
+    T getHead() {
+    	//@start-editable@
+
+		
+	   return this->head->element;
+		
+		
+		
+		
+		//@end-editable@
+
+    }
+
+    T getTail() {
+    	//@start-editable@
+
+		
+		
+    	return this->tail->element;	
+		
+		
+		
+		//@end-editable@
+
+    }
+
+    Node* findNode(T val){
+    	//@start-editable@
+
+		
+		Node *temp= head;
+    	while(temp!=NULL){
+    	    if(temp->element==val){
+    	        return temp;
+    	    }
+    	    temp=temp->next;
+    	}	
+		
+		
+		
+		//@end-editable@
+    	return temp;
+    }
+
+    //swap the nodes containing u and v
+    void swap(T u,T v){
+    	//@start-editable@
+
+		Node *fnode=head;
+    	Node *snode=head;
+    	T temp;
+    	int c=0;
+    	while(fnode!=NULL){
+    	    if(fnode->element==u){
+    	        c=1;
+    	        break;
+    	    }
+    	    fnode=fnode->next;
+    	}
+    	if(c==1){
+    	    while(snode!=NULL){
+    	        if(snode->element==v){
+    	            c=2;
+    	            break;
+    	        }
+    	        snode=snode->next;
+    	    }
+    	}else{
+    	    return;
+    	}
+    	if(c==2){
+    	    temp=fnode->element;
+    	    fnode->element=snode->element;
+    	    snode->element=temp;
+    	}
+    	return;		
+		
+		
+		
+		
+		
+		//@end-editable@
+
+    	
+    }
+     
+	//Prints the list
+	void printlist(){
+		if (!isEmpty()) {
+			Node *temp = head;
+			while (temp != NULL) {
+				cout << temp->element << "->";
+				temp = temp->next;
+			}
+			cout << endl;
+			temp = tail;
+			while (temp != NULL) {
+				cout << temp->element << "->";
+				temp = temp->prev;
+			}
+			cout << endl;
+			return;
+		}
+		cout << ("Linked List Empty Exception")<<endl;
+	}
+
+};
+
+int getValue(string s, int pos) {
+    istringstream iss(s);
+    string temp;
+    iss>>temp;
+    iss>>temp;
+    if(pos==1) {
+        return stoi(temp);
+    }
+    else {
+        iss>>temp;
+        return stoi(temp);
+    }
+}
+//Driver Code
+int main(){
+	DLList<int> dlist1;
+ 	string noOfInputs,str;
+ 	getline(cin, noOfInputs);
+ 	for(int i=0;i<stoi(noOfInputs);i++){
+ 	    getline(cin, str); 
+ 	    
+ 	    if (str.substr(0, 2) == "IF"){
+ 	        int value = getValue(str, 1);
+ 	        dlist1.insertFirst(value);
+ 	        dlist1.printlist();
+ 	    }
+ 	    else if (str.substr(0, 2) == "IL"){
+ 	        int value = getValue(str, 1);
+ 	        dlist1.insertLast(value);
+ 	        dlist1.printlist();
+ 	    }
+ 	    else if (str.substr(0, 2) == "DF"){
+ 	        dlist1.deleteFirst();
+ 	        dlist1.printlist();
+ 	    }
+ 	    else if (str.substr(0, 2) == "DL"){
+ 	        dlist1.deleteLast();
+ 	        dlist1.printlist();
+ 	    }
+ 	    else if (str.substr(0, 2) == "IA"){
+ 	        int value1 = getValue(str, 1);
+ 	        int value2 = getValue(str, 2);
+ 	        dlist1.insertAfter(value1,value2);
+ 	        dlist1.printlist();
+ 	    }
+ 	    else if (str.substr(0, 2) == "IB"){
+ 	        int value1 = getValue(str, 1);
+ 	        int value2 = getValue(str, 2);
+ 	        dlist1.insertBefore(value1,value2);
+ 	        dlist1.printlist();
+ 	    }
+		else if (str.substr(0, 2) == "DA"){
+ 	        int value = getValue(str, 1);
+ 	        dlist1.deleteAfter(value);
+ 	        dlist1.printlist();
+ 	    }
+ 	    else if (str.substr(0, 2) == "DB"){
+ 	        int value = getValue(str, 1);
+ 	        dlist1.deleteBefore(value);
+ 	        dlist1.printlist();
+ 	    }
+ 	    else if (str.substr(0, 1) == "L"){
+ 	       cout<< dlist1.getTail()<<endl;
+ 	    }
+ 	    else if (str.substr(0, 4) == "FIND"){
+ 	       int value1 = getValue(str, 1);
+ 	       DLList<int> :: Node *temp = dlist1.findNode(value1);
+ 	       if (temp!=NULL){
+ 	       	cout<<temp->element<<endl;
+ 	       }
+ 	       else{
+ 	       	cout<<"NULL"<<endl;
+ 	       }
+ 	    }
+ 	    else if (str.substr(0, 1) == "F"){
+ 	       cout<< dlist1.getHead()<<endl;
+ 	    }
+ 	    else if (str.substr(0, 2) == "SW"){
+ 	       int value1 = getValue(str, 1);
+ 	       int value2 = getValue(str, 2);
+ 	       dlist1.swap(value1,value2);
+ 	       dlist1.printlist();
+ 	    }
+ 	    else if (str.substr(0, 1) == "S"){
+ 	       cout<< dlist1.size()<<endl;
+ 	    }
+ 	    else if (str.substr(0,1) == "I"){
+ 	        //cout<<slist1.isEmpty()<<endl;
+ 	        if(dlist1.isEmpty()){
+ 	            cout<<"True"<<endl;
+ 	        }
+ 	        else{
+ 	            cout<<"False"<<endl;
+ 	        }
+ 	    }
+ 	}
+}
